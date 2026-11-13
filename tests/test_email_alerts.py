@@ -7,6 +7,8 @@ from conftest import NOW
 
 from job_alert.email_alerts.imap import fetch_gmail_alerts
 from job_alert.email_alerts.parser import parse_alert_message, sender_rules
+from job_alert.filters import classify_job
+from job_alert.models import RemoteScope, Track
 
 
 def eml(sender="alerts@wellfound.com", extra_headers=None, html=None):
@@ -83,6 +85,39 @@ def test_compact_multi_job_wrapper_does_not_leak_card_evidence(rules):
         eml("jobalerts-noreply@linkedin.com", html=html), rules, "me@gmail.com", NOW
     )
     assert [job.description for job in result.jobs] == ["DevOps Engineer", "Cloud Engineer"]
+
+
+def test_linkedin_emea_card_qualifies_as_remote(rules, config):
+    html = """
+    <div class="job-card">
+      <div><a href="https://www.linkedin.com/jobs/view/456?trk=email">Senior DevOps Engineer</a></div>
+      <div>Cloud Co</div><div>EMEA (Remote)</div>
+      <p>Fully remote across EMEA.</p>
+    </div>
+    """
+    result = parse_alert_message(
+        eml("jobalerts-noreply@linkedin.com", html=html), rules, "me@gmail.com", NOW
+    )
+    job = classify_job(result.jobs[0], config)
+    assert job.source == "gmail:linkedin"
+    assert job.remote_scope.value == RemoteScope.EMEA
+    assert job.tracks == {Track.REMOTE_EMEA}
+
+
+def test_linkedin_restricted_card_does_not_get_remote_track(rules, config):
+    html = """
+    <div class="job-card">
+      <a href="https://www.linkedin.com/jobs/view/457">Senior DevOps Engineer</a>
+      <div>Cloud Co</div><div>EMEA (Remote)</div>
+      <p>Fully remote across EMEA; candidates must be based in Germany.</p>
+    </div>
+    """
+    result = parse_alert_message(
+        eml("jobalerts-noreply@linkedin.com", html=html), rules, "me@gmail.com", NOW
+    )
+    job = classify_job(result.jobs[0], config)
+    assert job.remote_scope.value == RemoteScope.RESTRICTED
+    assert Track.REMOTE_EMEA not in job.tracks
 
 
 def test_linkedin_duplicate_links_are_suppressed(rules):

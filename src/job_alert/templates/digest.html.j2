@@ -16,8 +16,8 @@
     <p><a href="{{ job.url }}">View / apply</a></p>
   </article>
   {%- endmacro %}
-  <h2>Remote from anywhere</h2>
-  {% for job in digest.remote %}{{ job_card(job) }}{% else %}<p>No new worldwide-remote matches.</p>{% endfor %}
+  <h2>Fully remote — EMEA or worldwide</h2>
+  {% for job in digest.remote %}{{ job_card(job) }}{% else %}<p>No new fully remote EMEA/worldwide matches.</p>{% endfor %}
   <h2>Visa sponsorship or relocation</h2>
   {% for job in digest.visa_or_relocation %}{{ job_card(job) }}{% else %}<p>No new visa or relocation matches.</p>{% endfor %}
   <h2>Unparsed alerts</h2>

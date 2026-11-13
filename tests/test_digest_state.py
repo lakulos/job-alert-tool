@@ -86,13 +86,19 @@ def test_overlap_renders_in_each_section(make_job):
     assert content.remote == [overlap] and content.visa_or_relocation == [overlap]
 
 
+def test_emea_renders_in_remote_section(make_job):
+    emea = make_job(tracks={Track.REMOTE_EMEA})
+    content = build_digest([emea], [], 1)
+    assert content.remote == [emea]
+
+
 def test_message_headers_and_alternatives(make_job):
     job = make_job(tracks={Track.REMOTE_WORLDWIDE})
     content = build_digest([job], [], 10)
     html, text = render_digest(content)
     message = create_message(content, "me@gmail.com", "to@gmail.com", html, text)
     assert message["X-Job-Digest"] == "1"
-    assert message["Subject"] == "Job alerts (1): 1 remote anywhere, 0 visa/relocation"
+    assert message["Subject"] == "Job alerts (1): 1 remote EMEA/worldwide, 0 visa/relocation"
     assert "Nigeria" not in html
     assert message.is_multipart()
 

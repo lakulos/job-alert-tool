@@ -8,11 +8,13 @@ from typing import Any
 
 class Track(StrEnum):
     REMOTE_WORLDWIDE = "remote_worldwide"
+    REMOTE_EMEA = "remote_emea"
     VISA_OR_RELOCATION = "visa_or_relocation"
 
 
 class RemoteScope(StrEnum):
     WORLDWIDE = "worldwide"
+    EMEA = "emea"
     RESTRICTED = "restricted"
     UNCLEAR = "unclear"
 
@@ -104,6 +106,6 @@ class DigestContent:
     @property
     def subject(self) -> str:
         return (
-            f"Job alerts ({self.unique_job_count}): {len(self.remote)} remote anywhere, "
+            f"Job alerts ({self.unique_job_count}): {len(self.remote)} remote EMEA/worldwide, "
             f"{len(self.visa_or_relocation)} visa/relocation"
         )

@@ -89,6 +89,7 @@ def _matches_link(url: str, rule: SenderRule) -> bool:
 
 
 def _card(anchor: Tag) -> Tag:
+    fallback = anchor
     for parent in anchor.parents:
         if not isinstance(parent, Tag) or parent.name in {"body", "html", "[document]"}:
             break
@@ -100,8 +101,8 @@ def _card(anchor: Tag) -> Tag:
         if is_explicit_card and len(text) <= 1200:
             return parent
         if len(links) == 1 and len(text) <= 1200:
-            return parent
-    return anchor
+            fallback = parent
+    return fallback
 
 
 def _card_fields(anchor: Tag, title: str) -> tuple[str, str, str]:

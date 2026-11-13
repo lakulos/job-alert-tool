@@ -1,6 +1,6 @@
 # Job Alert
 
-A one-shot, rule-based Python tool that finds fresh **Cloud Engineer / Architect**, **DevOps Engineer**, and **Site Reliability Engineer (SRE)** jobs. It keeps only vacancies that explicitly offer **visa sponsorship or relocation**, or are explicitly **fully remote from anywhere in the world**, then sends one Gmail digest. You review and apply manually.
+A one-shot, rule-based Python tool that finds fresh **Cloud Engineer / Architect**, **DevOps Engineer**, and **Site Reliability Engineer (SRE)** jobs. It keeps only vacancies that explicitly offer **visa sponsorship or relocation**, or are explicitly **fully remote across EMEA or worldwide**, then sends one Gmail digest. You review and apply manually.
 
 There are **no LLM/AI calls at runtime**, no Telegram integration, and no application automation.
 
@@ -41,7 +41,7 @@ The public image is available as:
 lakulos/job-alert-tool:latest
 ```
 
-Versioned releases are also published, for example `lakulos/job-alert-tool:0.1.0`. Source and the Dockerfile are available at [github.com/lakulos/job-alert-tool](https://github.com/lakulos/job-alert-tool).
+Versioned releases are also published, for example `lakulos/job-alert-tool:0.1.1`. Source and the Dockerfile are available at [github.com/lakulos/job-alert-tool](https://github.com/lakulos/job-alert-tool).
 
 To build the current source locally instead:
 
@@ -170,7 +170,7 @@ If you later enable Gmail alert ingestion, create alerts on LinkedIn, Wellfound,
 - DevOps Engineer
 - Site Reliability Engineer / SRE
 
-Combine the role alerts with terms such as `visa sponsorship`, `relocation support`, `remote worldwide`, or `work from anywhere`. Send them to the Gmail account in `.env`. Only exact addresses in `alert_senders` are considered. Verify LinkedIn's exact From address in one of your own messages and update the supplied example if needed. The parser uses bounded text from each alert card for company, location, and eligibility evidence; being delivered by a “visa” or “remote” search does not qualify a vacancy on its own. A matching email that yields no recognized job links appears by subject under **Unparsed alerts**.
+Combine the role alerts with terms such as `visa sponsorship`, `relocation support`, `remote EMEA`, `remote worldwide`, or `work from anywhere`. Send them to the Gmail account in `.env`. Only exact addresses in `alert_senders` are considered. Verify LinkedIn's exact From address in one of your own messages and update the supplied example if needed. The parser uses bounded text from each alert card for company, location, and eligibility evidence; being delivered by a “visa” or “remote” search does not qualify a vacancy on its own. LinkedIn classification is limited to evidence included in the email card because the app does not scrape the hidden job page. A matching email that yields no recognized job links appears by subject under **Unparsed alerts**.
 
 ### Save sample alert emails
 
@@ -226,8 +226,8 @@ Do not run cron and the Docker scheduler at the same time unless duplicate deliv
 ## Rule behavior
 
 - Jobs older than 48 hours and canonical URLs already sent are dropped.
-- A job is retained only when it has explicit vacancy-level evidence of visa sponsorship or relocation, or explicit fully remote/from-anywhere-in-the-world evidence.
-- Generic `remote`, `global team`, `EMEA`, and `Africa` are not worldwide eligibility. Country/region, timezone, residency, work-authorization, payroll/entity, and “only” restrictions override worldwide-looking text.
+- A job is retained only when it has explicit vacancy-level evidence of visa sponsorship or relocation, or explicit fully remote EMEA/worldwide evidence.
+- Generic `remote`, `global team`, bare `EMEA`, and `Africa` are not eligible remote scopes. Hybrid/on-site/office attendance and country, timezone, residency, work-authorization, payroll/entity, and “only” restrictions override EMEA/worldwide-looking text.
 - Sponsorship and relocation negatives are checked before their corresponding positive phrases. Unclear evidence does not qualify.
 - Arbeitnow's structured `visa_sponsorship=true` response filter is trusted. A Jooble query term or email-alert query is not trusted as eligibility evidence.
 - A normalized exact company match in the UK sponsor register upgrades the annotation from `unclear` to `likely`, but never qualifies a vacancy by itself; a sponsor licence does not mean that role will sponsor.

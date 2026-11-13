@@ -27,7 +27,11 @@ def build_digest(
     selected = list(included.values())
     selected.sort(key=lambda job: job.posted_at, reverse=True)
     return DigestContent(
-        remote=[job for job in selected if Track.REMOTE_WORLDWIDE in job.tracks],
+        remote=[
+            job
+            for job in selected
+            if job.tracks & {Track.REMOTE_WORLDWIDE, Track.REMOTE_EMEA}
+        ],
         visa_or_relocation=[job for job in selected if Track.VISA_OR_RELOCATION in job.tracks],
         unparsed_alerts=sorted(
             unparsed_alerts,

@@ -24,6 +24,8 @@ def assign_tracks(job: Job) -> Job:
     job.tracks.clear()
     if job.remote_scope.value == RemoteScope.WORLDWIDE:
         job.tracks.add(Track.REMOTE_WORLDWIDE)
+    elif job.remote_scope.value == RemoteScope.EMEA:
+        job.tracks.add(Track.REMOTE_EMEA)
     if Sponsorship.EXPLICIT in {job.sponsorship.value, job.relocation.value}:
         job.tracks.add(Track.VISA_OR_RELOCATION)
     return job

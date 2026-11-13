@@ -38,7 +38,12 @@ def canonicalize_url(url: str) -> str:
 
 
 def _stronger_remote(left: Evidence, right: Evidence) -> Evidence:
-    rank = {RemoteScope.UNCLEAR: 0, RemoteScope.WORLDWIDE: 1, RemoteScope.RESTRICTED: 2}
+    rank = {
+        RemoteScope.UNCLEAR: 0,
+        RemoteScope.EMEA: 1,
+        RemoteScope.WORLDWIDE: 2,
+        RemoteScope.RESTRICTED: 3,
+    }
     return right if rank[RemoteScope(right.value)] > rank[RemoteScope(left.value)] else left
 
 
@@ -88,6 +93,7 @@ def merge_jobs(jobs: list[Job]) -> list[Job]:
     for job in merged.values():
         if job.remote_scope.value == RemoteScope.RESTRICTED:
             job.tracks.discard(Track.REMOTE_WORLDWIDE)
+            job.tracks.discard(Track.REMOTE_EMEA)
         if (
             job.sponsorship.value != Sponsorship.EXPLICIT
             and job.relocation.value != Sponsorship.EXPLICIT

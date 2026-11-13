@@ -11,9 +11,9 @@ Posted: {{ job.posted_at.strftime('%Y-%m-%d %H:%M UTC') }}
 Source: {{ job.metadata.get('attributions', [job.metadata.get('attribution', job.source)])|join(', ') }}
 Apply: {{ job.url }}
 {%- endmacro %}
-REMOTE FROM ANYWHERE
+FULLY REMOTE — EMEA OR WORLDWIDE
 {% for job in digest.remote %}{{ job_card(job) }}
-{% else %}No new worldwide-remote matches.
+{% else %}No new fully remote EMEA/worldwide matches.
 {% endfor %}
 VISA SPONSORSHIP OR RELOCATION
 {% for job in digest.visa_or_relocation %}{{ job_card(job) }}

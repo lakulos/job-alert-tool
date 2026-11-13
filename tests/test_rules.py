@@ -22,7 +22,7 @@ def test_title_rules(config):
         "Remote (US only)",
         "Remote within India only; worldwide team",
         "Candidates anywhere in the US may apply",
-        "Remote role for EMEA",
+        "EMEA team working on cloud systems",
         "Remote role for Africa",
         "Remote worldwide; must reside in Canada",
         "Work from anywhere; must work hours aligned in US Eastern timezone",
@@ -44,8 +44,49 @@ def test_remote_rules_accept_explicit_worldwide_scope(text):
     assert classify_remote(text).value == RemoteScope.WORLDWIDE
 
 
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Remote, EMEA",
+        "EMEA — fully remote",
+        "Fully remote across EMEA",
+        "Remote role open to applicants in EMEA",
+        "This position is fully remote and open to candidates throughout EMEA",
+        "Remote role for EMEA",
+        "Anywhere in EMEA, remote",
+    ],
+)
+def test_remote_rules_accept_explicit_emea_scope(text):
+    assert classify_remote(text).value == RemoteScope.EMEA
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Remote worldwide; hybrid role",
+        "Remote, EMEA; two days per week on-site",
+        "Work from anywhere; office attendance is required",
+        "Remote worldwide; candidates must be based in Germany",
+        "Remote, EMEA; must have the right to work in France",
+        "Remote worldwide; German work authorization required",
+        "Remote, EMEA; must overlap four hours with CET",
+        "Remote worldwide; UTC+1 to UTC+3 only",
+        "Remote role aligned to EMEA business hours",
+        "Work from anywhere within Germany",
+        "Remote, EMEA. Applicants based in Germany only",
+        "Remote, EMEA; applicants must be available 09:00-17:00 CET",
+    ],
+)
+def test_remote_rules_reject_conflicting_work_restrictions(text):
+    assert classify_remote(text).value == RemoteScope.RESTRICTED
+
+
 def test_global_without_remote_mode_is_not_worldwide_remote():
-    assert classify_remote("We are a global team working on-site").value == RemoteScope.UNCLEAR
+    assert classify_remote("We are a global team working on-site").value == RemoteScope.RESTRICTED
+
+
+def test_hybrid_cloud_phrase_does_not_mean_hybrid_work():
+    assert classify_remote("Fully remote across EMEA; build hybrid cloud platforms").value == RemoteScope.EMEA
 
 
 def test_sponsorship_rules_negative_precedes_positive():
@@ -91,6 +132,10 @@ def test_classifier_only_assigns_strict_tracks(config, make_job):
     worldwide = make_job(description="Remote role", location="Remote, worldwide")
     classify_job(worldwide, config)
     assert worldwide.tracks == {Track.REMOTE_WORLDWIDE}
+
+    emea = make_job(description="Fully remote across EMEA", location="EMEA")
+    classify_job(emea, config)
+    assert emea.tracks == {Track.REMOTE_EMEA}
 
     sponsored = make_job(description="Visa sponsorship is available", location="London")
     classify_job(sponsored, config)
