@@ -1,0 +1,18 @@
+{
+  "jobs": [
+    {
+      "id": 101,
+      "url": "https://jobicy.com/jobs/101",
+      "jobTitle": "Cloud Engineer",
+      "companyName": "Global Systems",
+      "jobGeo": "Anywhere",
+      "jobExcerpt": "Remote worldwide",
+      "jobDescription": "<p>Work from anywhere in the world.</p>",
+      "pubDate": "2026-10-16T12:00:00+00:00",
+      "jobIndustry": ["Technology"],
+      "jobType": ["Full-time"]
+    }
+  ],
+  "hasMore": false,
+  "nextCursor": null
+}

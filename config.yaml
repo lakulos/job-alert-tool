@@ -1,0 +1,90 @@
+roles:
+  # Matching is deliberately title-only; descriptions never make an unrelated title eligible.
+  title_patterns:
+    - '(?i)\b(?:cloud|cloud infrastructure)\s+(?:engineer|architect)\b'
+    - '(?i)\bdevops\s+engineer\b'
+    - '(?i)\bsite reliability engineer\b'
+    - '(?i)\bSRE\b'
+    - '(?i)\b(?:infrastructure|platform)\s+(?:engineer|architect)\b'
+  exclude_title_terms:
+    - intern
+    - internship
+
+sources:
+  greenhouse:
+    enabled: true
+    slugs: [grafanalabs, datadog, elastic, fastly]
+  lever:
+    enabled: true
+    slugs: [palantir, qonto, dlocal]
+  ashby:
+    enabled: true
+    slugs: [deepgram, temporal, posthog, modal]
+  smartrecruiters:
+    enabled: true
+    # Add public company identifiers from api.smartrecruiters.com career boards.
+    companies: []
+  recruitee:
+    enabled: true
+    # A tenant may be a slug or {slug: company, token_env: RECRUITEE_COMPANY_TOKEN}.
+    tenants: []
+  remote_ok:
+    enabled: true
+  jobicy:
+    enabled: true
+  himalayas:
+    enabled: true
+  remotive:
+    enabled: true
+  we_work_remotely:
+    enabled: true
+    feeds:
+      - https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss
+  arbeitnow:
+    enabled: true
+  myjobmag_rss:
+    enabled: true
+    url: https://www.myjobmag.com/jobsxml_by_categories.xml
+  jooble:
+    enabled: true
+    api_base: https://jooble.org/api
+  gmail_alerts:
+    enabled: false
+  apify:
+    enabled: false
+    # Enabling an actor is a user decision. Check the target site's terms first.
+    actors: {}
+
+alert_senders:
+  # Replace these examples with exact From addresses from your own alerts.
+  linkedin: [jobalerts-noreply@linkedin.com]
+  wellfound: [alerts@wellfound.com]
+  jobberman: [job-alerts@jobberman.com]
+  myjobmag: [jobs@myjobmag.com]
+  hotnigerianjobs: [alerts@hotnigerianjobs.com]
+
+email_rules:
+  linkedin:
+    allowed_hosts: [linkedin.com, www.linkedin.com]
+    path_contains: [/jobs/view/]
+  wellfound:
+    allowed_hosts: [wellfound.com, www.wellfound.com]
+    path_contains: [/jobs/, /l/]
+  jobberman:
+    allowed_hosts: [jobberman.com, www.jobberman.com]
+    path_contains: [/job/, /jobs/]
+  myjobmag:
+    allowed_hosts: [myjobmag.com, www.myjobmag.com]
+    path_contains: [/job/, /jobs/, /a_fields.php]
+  hotnigerianjobs:
+    allowed_hosts: [hotnigerianjobs.com, www.hotnigerianjobs.com]
+    path_contains: [/jobs/, /job/]
+
+max_jobs_per_email: 50
+freshness_hours: 48
+state_path: .cache/job-alert/state.sqlite3
+cache_dir: .cache/job-alert
+http:
+  timeout_seconds: 20
+  retries: 2
+  user_agent: job-alert/0.1 (+personal job digest)

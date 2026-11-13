@@ -1,0 +1,16 @@
+{
+  "jobs": [
+    {
+      "id": 2,
+      "url": "https://remotive.com/remote-jobs/devops/2",
+      "title": "DevOps Engineer",
+      "company_name": "Acme",
+      "candidate_required_location": "Worldwide",
+      "description": "<p>Remote worldwide</p>",
+      "publication_date": "2026-10-16T12:00:00+00:00",
+      "tags": [
+        "devops"
+      ]
+    }
+  ]
+}

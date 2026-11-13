@@ -1,0 +1,17 @@
+{
+  "jobs": [
+    {
+      "id": 1,
+      "absolute_url": "https://boards.example/jobs/1?utm_source=x",
+      "title": "Senior DevOps Engineer",
+      "updated_at": "2026-10-16T12:00:00+00:00",
+      "first_published": "2026-10-16T12:00:00+00:00",
+      "location": {
+        "name": "Remote, worldwide"
+      },
+      "content": "<p>We sponsor visas.</p>",
+      "departments": [],
+      "offices": []
+    }
+  ]
+}

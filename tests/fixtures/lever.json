@@ -1,0 +1,15 @@
+[
+  {
+    "id": "l1",
+    "hostedUrl": "https://jobs.example/l1",
+    "text": "Cloud Infrastructure Engineer",
+    "createdAt": 1792152000000,
+    "categories": {
+      "location": "Ikeja, Nigeria",
+      "team": "Cloud"
+    },
+    "descriptionPlain": "Hybrid role",
+    "lists": [],
+    "workplaceType": "hybrid"
+  }
+]

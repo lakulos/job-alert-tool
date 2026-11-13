@@ -1,0 +1,20 @@
+{
+  "offers": [
+    {
+      "id": 201,
+      "guid": "rec-1",
+      "title": "DevOps Engineer",
+      "company_name": "Relocate Cloud",
+      "status": "published",
+      "careers_url": "https://example.recruitee.com/o/devops-engineer",
+      "careers_apply_url": "https://example.recruitee.com/o/devops-engineer/apply",
+      "published_at": "2026-10-16T12:00:00+00:00",
+      "description": "<p>Operate our platform.</p>",
+      "requirements": "<p>Relocation support is provided.</p>",
+      "remote": false,
+      "hybrid": false,
+      "locations": [{"city": "Amsterdam", "country": "Netherlands"}],
+      "tags": ["cloud"]
+    }
+  ]
+}

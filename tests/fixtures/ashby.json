@@ -1,0 +1,14 @@
+{
+  "jobs": [
+    {
+      "id": "a1",
+      "jobUrl": "https://jobs.example/a1",
+      "title": "Site Reliability Engineer",
+      "location": "Remote (US only)",
+      "descriptionPlain": "No visa sponsorship",
+      "publishedAt": "2026-10-16T12:00:00+00:00",
+      "isRemote": true,
+      "department": "Engineering"
+    }
+  ]
+}

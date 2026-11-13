@@ -1,0 +1,15 @@
+{
+  "data": [
+    {
+      "slug": "cloud-engineer-1",
+      "url": "https://www.arbeitnow.com/jobs/cloud-engineer-1",
+      "title": "Cloud Engineer",
+      "company_name": "Example GmbH",
+      "location": "Berlin",
+      "description": "Relocation support",
+      "created_at": 1792152000,
+      "remote": false,
+      "tags": []
+    }
+  ]
+}

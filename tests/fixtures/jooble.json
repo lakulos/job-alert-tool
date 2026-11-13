@@ -1,0 +1,14 @@
+{
+  "jobs": [
+    {
+      "id": "j1",
+      "link": "https://jooble.example/j1",
+      "title": "DevOps Engineer",
+      "company": "Naija Cloud",
+      "location": "Abuja, Nigeria",
+      "snippet": "Remote role",
+      "updated": "2026-10-16T12:00:00+00:00",
+      "type": "remote"
+    }
+  ]
+}

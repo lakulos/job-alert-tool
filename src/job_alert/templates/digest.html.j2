@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>{{ digest.subject }}</title></head>
+<body style="font-family:Arial,sans-serif;color:#202124;max-width:800px;margin:auto">
+  <h1>{{ digest.subject }}</h1>
+  {% macro job_card(job) -%}
+  <article style="border:1px solid #dadce0;border-radius:8px;padding:14px;margin:12px 0">
+    <h3 style="margin:0 0 6px"><a href="{{ job.url }}">{{ job.title }}</a></h3>
+    <div><strong>{{ job.company or "Company not provided" }}</strong> · {{ job.location or "Location not provided" }}</div>
+    <div><strong>Tracks:</strong> {{ job.tracks|map('string')|join(', ') }}</div>
+    <div><strong>Remote scope:</strong> {{ job.remote_scope.value }} — “{{ job.remote_scope.phrase }}”</div>
+    <div><strong>Visa sponsorship:</strong> {{ job.sponsorship.value }} — “{{ job.sponsorship.phrase }}”</div>
+    <div><strong>Relocation:</strong> {{ job.relocation.value }} — “{{ job.relocation.phrase }}”</div>
+    <div><strong>Posted:</strong> {{ job.posted_at.strftime('%Y-%m-%d %H:%M UTC') }}</div>
+    <div><strong>Source:</strong> {{ job.metadata.get('attributions', [job.metadata.get('attribution', job.source)])|join(', ') }}</div>
+    <p><a href="{{ job.url }}">View / apply</a></p>
+  </article>
+  {%- endmacro %}
+  <h2>Remote from anywhere</h2>
+  {% for job in digest.remote %}{{ job_card(job) }}{% else %}<p>No new worldwide-remote matches.</p>{% endfor %}
+  <h2>Visa sponsorship or relocation</h2>
+  {% for job in digest.visa_or_relocation %}{{ job_card(job) }}{% else %}<p>No new visa or relocation matches.</p>{% endfor %}
+  <h2>Unparsed alerts</h2>
+  {% if digest.unparsed_alerts %}<ul>{% for alert in digest.unparsed_alerts %}<li>{{ alert.subject }}</li>{% endfor %}</ul>
+  {% else %}<p>None.</p>{% endif %}
+</body>
+</html>

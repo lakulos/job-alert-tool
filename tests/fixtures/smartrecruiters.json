@@ -1,0 +1,20 @@
+{
+  "totalFound": 1,
+  "content": [
+    {
+      "id": "sr-1",
+      "name": "Cloud Infrastructure Engineer",
+      "postingUrl": "https://jobs.smartrecruiters.com/Example/sr-1",
+      "applyUrl": "https://jobs.smartrecruiters.com/Example/sr-1/apply",
+      "releasedDate": "2026-10-16T12:00:00+00:00",
+      "company": {"identifier": "Example", "name": "Example Cloud"},
+      "location": {"city": "London", "country": "GB", "remote": false},
+      "jobAd": {
+        "sections": {
+          "jobDescription": {"text": "<p>Build cloud platforms.</p>"},
+          "additionalInformation": {"text": "<p>Visa sponsorship is available.</p>"}
+        }
+      }
+    }
+  ]
+}

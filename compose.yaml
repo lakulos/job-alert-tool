@@ -1,0 +1,33 @@
+name: job-alert
+
+services:
+  scheduler:
+    image: lakulos/job-alert-tool:latest
+    restart: unless-stopped
+    init: true
+    env_file:
+      - .env
+    environment:
+      JOB_ALERT_CONFIG: /app/config.yaml
+      JOB_ALERT_TIMEZONE: ${JOB_ALERT_TIMEZONE:-Africa/Lagos}
+      JOB_ALERT_TIMES: ${JOB_ALERT_TIMES:-07:07,19:07}
+      RUN_ON_START: ${RUN_ON_START:-true}
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - job-alert-data:/app/.cache/job-alert
+
+  dry-run:
+    image: lakulos/job-alert-tool:latest
+    profiles: [tools]
+    entrypoint: ["/usr/bin/tini", "--"]
+    command: ["python", "-m", "job_alert", "--config", "/app/config.yaml", "--dry-run", "--output", "/app/output/digest.html"]
+    env_file:
+      - .env
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./output:/app/output
+      - job-alert-data:/app/.cache/job-alert
+    working_dir: /app/output
+
+volumes:
+  job-alert-data:
