@@ -13,6 +13,11 @@ def test_fixture_dry_run_needs_no_credentials(tmp_path, monkeypatch):
     shutil.copy(ROOT / "config.yaml", config)
     for name in ("GMAIL_ADDRESS", "GMAIL_APP_PASSWORD", "DIGEST_TO", "APIFY_TOKEN", "JOOBLE_API_KEY"):
         monkeypatch.delenv(name, raising=False)
+
+    def unexpected_request(*_args, **_kwargs):
+        raise AssertionError("fixture dry run attempted a network request")
+
+    monkeypatch.setattr("httpx.Client.request", unexpected_request)
     assert run(["--config", str(config), "--dry-run", "--fixtures", str(FIXTURES)]) == 0
     output = tmp_path / "digest.html"
     assert output.exists()

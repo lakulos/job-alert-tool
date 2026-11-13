@@ -89,6 +89,7 @@ def run(argv: list[str] | None = None) -> int:
             http,
             now=evaluation_now,
             use_sponsor_register=not bool(args.fixtures),
+            validate_links=not bool(args.fixtures),
         )
         unparsed = [alert for result in results for alert in result.unparsed_alerts]
         all_message_ids = {message_id for result in results for message_id in result.message_ids}

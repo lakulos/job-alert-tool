@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from job_alert.availability import LinkStatus, check_job_link
 from job_alert.config import AppConfig
 from job_alert.dedupe import merge_jobs
 from job_alert.email_alerts.imap import fetch_gmail_alerts
@@ -249,6 +250,7 @@ def filter_and_classify(
     http: HttpClient,
     now: datetime | None = None,
     use_sponsor_register: bool = True,
+    validate_links: bool = True,
 ) -> list[Job]:
     now = now or datetime.now(UTC)
     candidates = [job for result in results for job in result.jobs]
@@ -266,7 +268,26 @@ def filter_and_classify(
             sponsors = SponsorRegister(config.cache_dir, http).load(now)
         except Exception as exc:
             LOGGER.warning("UK sponsor register unavailable: %s", exc)
+    eligible: list[Job] = []
     for job in merged:
         apply_sponsor_match(job, sponsors)
         assign_tracks(job)
-    return [job for job in merged if job.tracks]
+        if not job.tracks:
+            continue
+        if not config.link_validation.enabled:
+            eligible.append(job)
+            continue
+        check = check_job_link(
+            job,
+            http,
+            now,
+            config.link_validation.timeout_seconds,
+            probe=validate_links,
+        )
+        if check.status == LinkStatus.UNAVAILABLE:
+            LOGGER.info("Skipping unavailable %s job link: %s", job.source, check.reason)
+            continue
+        if check.status == LinkStatus.UNKNOWN and check.reason != "network check disabled":
+            LOGGER.warning("Keeping unverified %s job link: %s", job.source, check.reason)
+        eligible.append(job)
+    return eligible

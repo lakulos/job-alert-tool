@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,6 +24,12 @@ class HttpConfig:
 
 
 @dataclass(frozen=True, slots=True)
+class LinkValidationConfig:
+    enabled: bool
+    timeout_seconds: float
+
+
+@dataclass(frozen=True, slots=True)
 class AppConfig:
     path: Path
     raw: dict[str, Any]
@@ -34,6 +41,7 @@ class AppConfig:
     state_path: Path
     cache_dir: Path
     http: HttpConfig
+    link_validation: LinkValidationConfig
 
     @property
     def sources(self) -> dict[str, dict[str, Any]]:
@@ -85,6 +93,18 @@ def load_config(path: str | Path = "config.yaml") -> AppConfig:
     http_raw = loaded.get("http", {})
     if not isinstance(http_raw, dict):
         raise ConfigError("http must be a mapping")
+    link_validation_raw = loaded.get("link_validation", {})
+    if not isinstance(link_validation_raw, dict):
+        raise ConfigError("link_validation must be a mapping")
+    try:
+        link_timeout = float(link_validation_raw.get("timeout_seconds", 8))
+    except (TypeError, ValueError) as exc:
+        raise ConfigError("link_validation.timeout_seconds must be a number") from exc
+    if not math.isfinite(link_timeout) or link_timeout <= 0:
+        raise ConfigError("link_validation.timeout_seconds must be a finite positive number")
+    link_enabled = link_validation_raw.get("enabled", True)
+    if not isinstance(link_enabled, bool):
+        raise ConfigError("link_validation.enabled must be true or false")
     sources = loaded.get("sources")
     if not isinstance(sources, dict):
         raise ConfigError("sources must be a mapping")
@@ -116,5 +136,9 @@ def load_config(path: str | Path = "config.yaml") -> AppConfig:
             timeout_seconds=float(http_raw.get("timeout_seconds", 20)),
             retries=int(http_raw.get("retries", 2)),
             user_agent=str(http_raw.get("user_agent", "job-alert/0.1")),
+        ),
+        link_validation=LinkValidationConfig(
+            enabled=link_enabled,
+            timeout_seconds=link_timeout,
         ),
     )

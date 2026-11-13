@@ -88,3 +88,6 @@ http:
   timeout_seconds: 20
   retries: 2
   user_agent: job-alert/0.1 (+personal job digest)
+link_validation:
+  enabled: true
+  timeout_seconds: 8

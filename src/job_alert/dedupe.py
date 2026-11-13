@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
+from job_alert.availability import earliest_expiry, valid_job_url
 from job_alert.models import Evidence, Job, RemoteScope, Sponsorship, Track
 
 _TRACKING_KEYS = {
@@ -19,8 +20,13 @@ _TRACKING_KEYS = {
 
 
 def canonicalize_url(url: str) -> str:
-    parts = urlsplit(url.strip())
-    scheme = parts.scheme.casefold() or "https"
+    cleaned = url.strip()
+    if cleaned.startswith("//"):
+        cleaned = f"https:{cleaned}"
+    if not valid_job_url(cleaned):
+        return cleaned
+    parts = urlsplit(cleaned)
+    scheme = parts.scheme.casefold()
     host = (parts.hostname or "").casefold()
     port = parts.port
     netloc = host
@@ -82,6 +88,10 @@ def merge_jobs(jobs: list[Job]) -> list[Job]:
         attributions.update(str(value) for value in job.metadata.get("attributions", []))
         if attributions:
             current.metadata["attributions"] = sorted(attributions)
+        for key in ("expiry_date", "close_at"):
+            expiry = earliest_expiry(current.metadata.get(key), job.metadata.get(key))
+            if expiry is not None:
+                current.metadata[key] = expiry
         message_ids = set(current.metadata.get("message_ids", []))
         for candidate in (current.metadata.get("message_id"), job.metadata.get("message_id")):
             if candidate:

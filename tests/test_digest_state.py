@@ -14,6 +14,14 @@ def test_url_canonicalization():
         canonicalize_url("https://www.linkedin.com/jobs/view/123?trk=email&trackingId=x&refId=y")
         == "https://www.linkedin.com/jobs/view/123"
     )
+    assert canonicalize_url("//example.com/jobs/1") == "https://example.com/jobs/1"
+    assert canonicalize_url("job-id-only") == "job-id-only"
+
+
+def test_merge_keeps_earliest_structured_expiry(make_job):
+    later = make_job(metadata={"expiry_date": "2026-10-20T12:00:00Z"})
+    earlier = make_job(metadata={"expiry_date": "2026-10-18T12:00:00Z"})
+    assert merge_jobs([later, earlier])[0].metadata["expiry_date"] == "2026-10-18T12:00:00Z"
 
 
 def test_merge_tracks(make_job):
