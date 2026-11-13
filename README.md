@@ -163,6 +163,7 @@ Edit `config.yaml`:
 - `sources`: enable/disable each adapter; edit Greenhouse, Lever, and Ashby slugs, SmartRecruiters company identifiers, and Recruitee tenants.
 - `alert_senders`: relevant only when `sources.gmail_alerts.enabled` is true. It is currently false, so the application does not read your inbox. Sender addresses must exactly match the alerts you actually receive.
 - `max_jobs_per_email`: global unique-job cap.
+- `link_validation`: enable/disable final job-link checks and set their short per-link timeout. Validation is enabled by default.
 
 If you later enable Gmail alert ingestion, create alerts on LinkedIn, Wellfound, Jobberman, MyJobMag, and Hot Nigerian Jobs for:
 
@@ -226,6 +227,8 @@ Do not run cron and the Docker scheduler at the same time unless duplicate deliv
 ## Rule behavior
 
 - Jobs older than 48 hours and canonical URLs already sent are dropped.
+- Before delivery, malformed/non-HTTP links, structured expiry times that have passed, and links confirmed missing by HTTP 404/410 are dropped. The check uses `HEAD` with a small ranged `GET` fallback. Authorization walls, rate limits, server errors, and network failures are inconclusive and fail open so anti-bot behavior does not hide real vacancies. Fixture-backed dry runs remain fully offline.
+- Link validation reduces stale alerts but cannot guarantee that a vacancy remains open after the check or after the email is sent.
 - A job is retained only when it has explicit vacancy-level evidence of visa sponsorship or relocation, or explicit fully remote EMEA/worldwide evidence.
 - Generic `remote`, `global team`, bare `EMEA`, and `Africa` are not eligible remote scopes. Hybrid/on-site/office attendance and country, timezone, residency, work-authorization, payroll/entity, and “only” restrictions override EMEA/worldwide-looking text.
 - Sponsorship and relocation negatives are checked before their corresponding positive phrases. Unclear evidence does not qualify.
